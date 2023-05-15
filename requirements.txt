@@ -1,0 +1,5 @@
+Flask == 2.2.3 
+Flask-SQLAlchemy
+Flask-Migrate 
+flask-login 
+mysqlclient

@@ -1,9 +1,10 @@
 FROM python:3.11-bullseye
 
-RUN pip install Flask==2.2.3 Flask-SQLAlchemy Flask-Migrate flask-login mysqlclient
-
-
 WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
 COPY ./src/app.py app.py
 COPY ./src/templates templates
 
