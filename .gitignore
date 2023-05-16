@@ -1,1 +1,4 @@
 mysql
+.env
+src/__pycache__
+src/migrations
