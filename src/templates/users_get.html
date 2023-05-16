@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザ一覧</title>
+    <link rel="icon" href="../static/favicon.png">
+</head>
+
+<body>
+    <h1>追加フォーム</h1>
+    <form action="/users" method="POST">
+        <div>
+            名前:<input name="user_name"></input>
+            <input type="submit" value="送信">
+            <input type="reset" value="取消">
+        </div>
+
+    </form>
+
+    <h1>検索結果</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>名前</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td><a href="/users/{{ user.id }}">
+                    <p>{{ user.id }}</p>
+                </a></td>
+            <td>{{ user.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
