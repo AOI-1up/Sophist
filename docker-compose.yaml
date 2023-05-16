@@ -3,6 +3,7 @@ services:
   app:
     restart: always
     build: .
+    container_name: app
     volumes:
     - .:/app
     ports: 
@@ -10,6 +11,7 @@ services:
   db:
     restart: always
     image: mysql:8.0
+    container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
