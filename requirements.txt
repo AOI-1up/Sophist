@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-Migrate 
 flask-login 
 mysqlclient
+python-dotenv
