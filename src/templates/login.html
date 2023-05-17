@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    <form action="/login" method="POST">
+        <div>
+            メール:<input name="mail"></input>
+        </div>
+        <div>
+            パスワード:<input type="password" name="password"></input>
+        </div>
+        <div>
+            <input type="submit" value="ログイン">
+        </div>
+    </form>
+</body>
+</html>
