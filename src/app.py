@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
+
 # SQLAlchrmy Settings
 dotenv_path = join(dirname(__file__), '../.env')
 load_dotenv()
@@ -38,7 +39,7 @@ class User(UserMixin, db.Model):
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-            return check_password_hash(self.password, password)
+        return check_password_hash(self.password, password)
 
 
 @login.user_loader
@@ -46,44 +47,21 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+# Home Page
 @app.route("/",methods=['GET'])
 def index_get():
     return render_template('index.html')
 
 
-@app.route('/login', methods=['GET'])
-def login_get():
-  if current_user.is_authenticated:
-    return redirect(url_for('index_get'))
-  
-  return render_template('login.html')
+# Register User
+@app.route("/register",methods=['GET'])
+def register_get():
+    if current_user.is_authenticated:
+        return redirect(url_for('index_get'))
 
-@app.route('/login', methods=['POST'])
-def login_post():
-    user = User.query.filter_by(mail=request.form["mail"]).one_or_none()
-    
-    if user is None or not user.check_password(request.form["password"]):
-        flash('メールアドレスかパスワードが間違っています')
-        return redirect(url_for('login_get'))
+    return render_template('register.html')
 
-    login_user(user)
-    return redirect(url_for('index_get'))
-
-
-@app.route('/logout')
-def logout():
-  logout_user()
-  return redirect(url_for('index_get'))
-
-# UserList Page
-@app.route("/users",methods=['GET'])
-def users_get():
-    users = User.query.all()
-    return render_template('users_get.html', users=users)
-
-
-# Add User
-@app.route("/users",methods=['POST'])
+@app.route("/register",methods=['POST'])
 def users_post():
     user = User(
         name=request.form["user_name"],
@@ -92,26 +70,34 @@ def users_post():
     user.set_password(request.form["password"])
     db.session.add(user)
     db.session.commit()
-    return redirect(url_for('users_get'))
+    return redirect(url_for('login_get'))
 
 
-# UserDetail Page
-@app.route("/users/<id>",methods=['GET'])
-def users_id_get(id):
-    if str(current_user.id) != str(id):
-        return Response(response="他人の個別ページは開けません", status=403)
-    user = User.query.get(id)
-    return render_template('users_id_get.html', user=user)
+# Login User
+@app.route('/login', methods=['GET'])
+def login_get():
+    if current_user.is_authenticated:
+        return redirect(url_for('index_get'))
+
+    return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login_post():
+    user = User.query.filter_by(mail=request.form["mail"]).one_or_none()
+
+    if user is None or not user.check_password(request.form["password"]):
+        flash('メールアドレスかパスワードが間違っています')
+        return redirect(url_for('login_get'))
+
+    login_user(user)
+    return redirect(url_for('index_get'))
 
 
-# Update User Information
-@app.route("/users/<id>/edit",methods=['POST'])
-def users_id_post_edit(id):
-    user = User.query.get(id)
-    user.name = request.form["user_name"]
-    db.session.merge(user)
-    db.session.commit()
-    return redirect(url_for('users_get'))
+# Logout User
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index_get'))
 
 
 # Delete User
@@ -121,6 +107,27 @@ def users_id_post_delete(id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('users_get'))
+
+
+# UserList Page
+@app.route("/users",methods=['GET'])
+def users_get():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login_get'))
+    users = User.query.all()
+    return render_template('users_get.html', users=users)
+
+
+# User Page
+@app.route("/users/<id>",methods=['GET'])
+def users_id_get(id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login_get'))
+    if str(current_user.id) != str(id):
+        return Response(response="Forbidden", status=403)
+    user = User.query.get(id)
+    return render_template('users_id_get.html', user=user)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)

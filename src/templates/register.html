@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register / SOPHIST</title>
+    <link rel="icon" href="../static/favicon.png">
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+</head>
+
+<body>
+    <h1>登録</h1>
+    <form action="/register" method="POST">
+        <div>名前:<input name="user_name"></input></div>
+        <div>メールアドレス:<input name="mail"></input></div>
+        <div>パスワード:<input type="password" name="password"></input></div>
+        <div>            
+            <input type="submit" value="送信">
+            <input type="reset" value="取消">
+        </div>
+    </form>
+</body>
+
+</html>
