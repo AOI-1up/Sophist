@@ -1,4 +1,5 @@
 mysql
 .env
-src/__pycache__
+src/app/__pycache__
+src/app/routes/__pycache__
 src/migrations
