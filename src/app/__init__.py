@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 import os
-from os.path import join, dirname
 from dotenv import load_dotenv
 
 # オブジェクトをグローバルスコープで宣言
@@ -17,7 +16,6 @@ def create_app():
 
     # SQLAlchemy 用の認証・接続情報を定義
     load_dotenv()
-    dotenv_path = join(dirname(__file__), '../../.env')
     DB_USER = os.environ['MYSQL_USER']
     DB_PASS = os.environ['MYSQL_PASSWORD']
     DB_HOST = "db"
@@ -37,12 +35,13 @@ def create_app():
     from .routes.auth import auth_bp
     from .models import User
 
+    # オブジェクトを Flask アプリケーションに登録
+    app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
+
     # ユーザ情報をロード
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))
 
-    # オブジェクトを Flask アプリケーションに登録
-    app.register_blueprint(main_bp)
-    app.register_blueprint(auth_bp)
     return app
