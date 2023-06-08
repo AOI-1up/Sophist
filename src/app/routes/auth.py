@@ -43,4 +43,4 @@ def login_post():
 @auth_bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index_get'))
+    return redirect(url_for('main.index_get'))
