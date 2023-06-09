@@ -1,3 +1,4 @@
+.vscode
 mysql
 .env
 src/app/__pycache__

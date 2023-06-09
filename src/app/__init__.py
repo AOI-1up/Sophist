@@ -10,19 +10,22 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 
+
 # Flask アプリケーションを初期化
 def create_app():
     app = Flask(__name__)
 
     # SQLAlchemy 用の認証・接続情報を定義
     load_dotenv()
-    DB_USER = os.environ['MYSQL_USER']
-    DB_PASS = os.environ['MYSQL_PASSWORD']
+    DB_USER = os.environ["MYSQL_USER"]
+    DB_PASS = os.environ["MYSQL_PASSWORD"]
     DB_HOST = "db"
-    DB_NAME = os.environ['MYSQL_DATABASE']
+    DB_NAME = os.environ["MYSQL_DATABASE"]
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqldb://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}?charset=utf8"
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = f"mysql+mysqldb://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}?charset=utf8"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     app.secret_key = "secret"
 
     # Flask アプリケーションと拡張機能を結合

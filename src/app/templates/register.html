@@ -5,20 +5,42 @@
     <meta charset="UTF-8">
     <title>Register / SOPHIST</title>
     <link rel="icon" href="../static/favicon.png">
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 </head>
 
 <body>
-    <h1>登録</h1>
-    <form action="/register" method="POST">
-        <div>名前:<input name="user_name"></input></div>
-        <div>メールアドレス:<input name="mail"></input></div>
-        <div>パスワード:<input type="password" name="password"></input></div>
-        <div>            
-            <input type="submit" value="送信">
-            <input type="reset" value="取消">
+    {% extends "layout.html" %}
+    {% block content %}
+
+    <div class="m-2 text-3xl">登録</div>
+    <form action="/register" method="POST" class="m-5">
+        <div>
+            名前:<input name="user_name" class="m-2 border-4"></input>
+        </div>
+        <div>
+            メールアドレス:<input type="email" name="mail" class="m-2 border-4"></input>
+        </div>
+        <div>
+            パスワード:<input type="password" name="password" class="m-2 border-4"></input>
+        </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <div>
+            <input type="submit" value="送信" class="m-2 border-4">
+            <input type="reset" value="取消" class="m-2 border-4">
         </div>
     </form>
+    <a href="{{ url_for('auth.login_get') }}">
+        <div class="m-5">ログインはこちら</div>
+    </a>
+
+    {% endblock %}
 </body>
 
 </html>

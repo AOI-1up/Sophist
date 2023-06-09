@@ -5,36 +5,18 @@
     <meta charset="UTF-8">
     <title>Top / SOPHIST</title>
     <link rel="icon" href="../static/favicon.png">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
-    <header class="flex flex-col">
-        <div class="h-28 bg-black flex justify-center">
-            <div class="w-[1200px] relative">
-                <div class="w-full h-full absolute flex flex-col items-center justify-center">
-                    <img src="../static/favicon.png" class="w-16 h-16" />
-                    <div
-                        class="font-serif text-transparent text-3xl bg-clip-text bg-gradient-to-r from-white to-yellow-600">
-                        SOPHIST</div>
-                </div>
-                <div class="w-full h-full absolute flex flex-col items-end justify-center">
-                    <a href="{{ url_for('auth.login_get') }}">
-                        <img src="../static/usericon.png" class="w-9 h-9" />
-                        <div class="text-yellow-300 text-xs mt-2 mr-5">ログイン</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="h-12 bg-yellow-950 flex justify-center">
-            <div class="w-[1200px]">
-                
-            </div>
-        </div>
-    </header>
-    <Center class="text-7xl">
+    {% extends "layout.html" %}
+    {% block content %}
+
+    <center class="text-7xl">
         ようこそ {{ current_user.name }}
-    </Center>
+    </center>
+
+    {% endblock %}
 </body>
+
 
 </html>
