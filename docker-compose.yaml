@@ -1,13 +1,14 @@
 version: '3'
 services:
   app:
-    restart: always
     build: .
     container_name: app
     volumes:
     - .:/app
     ports: 
     - 8080:8080
+    tty: true
+    init: true
   db:
     restart: always
     image: mysql:8.0
@@ -22,3 +23,5 @@ services:
     - ./mysql:/var/lib/mysql
     ports:
     - 3306:3306
+    tty: true
+    init: true
