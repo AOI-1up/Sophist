@@ -44,7 +44,7 @@ def login_post():
         flash("メールアドレスかパスワードが間違っています")
         return redirect(url_for("auth.login_get"))
     login_user(user)
-    return redirect(url_for("main.index_get"))
+    return redirect(url_for("main.userpage_get"))
 
 
 # ユーザーログアウト用 API
