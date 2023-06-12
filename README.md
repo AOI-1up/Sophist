@@ -8,7 +8,7 @@
 > docker compose up -d
 > docker exec -it app bash
 # cd src/
-# python  run.py
+# python run.py
 ```
 
 ## マイグレーション (初期起動時)
