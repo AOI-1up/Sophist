@@ -11,30 +11,44 @@
     {% extends "layout.html" %}
     {% block content %}
 
-    <div class="m-2 text-3xl">ログイン</div>
-    <form action="/login" method="POST" class="m-5">
-        <div>
-            メールアドレス:<input type="email" name="mail" class="m-2 border-4"></input>
-        </div>
-        <div>
-            パスワード:<input type="password" name="password" class="m-2 border-4"></input>
-        </div>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul>
+    <div class="flex flex-col items-center">
+        <div class="w-[550px] flex flex-col items-center mt-10">
+            <div class="w-full text-3xl text-left">ログイン</div>
+            <form action="/login" method="POST">
+                <div class="h-32 mt-5 flex flex-col items-center">
+                    <div class="h-full flex items-center font-bold">
+                        <div class="w-36 h-full pl-4 flex items-center bg-gray-50">メールアドレス:</div>
+                        <input type="email" name="mail" class="w-[350px] h-[40px] ml-5 border-2" />
+                    </div>
+                    <div class="h-full flex items-center font-bold">
+                        <div class="w-36 h-full pl-4 flex items-center bg-gray-50">パスワード:</div>
+                        <input type="password" name="password" class="w-[350px] h-[40px] ml-5 border-2" />
+                    </div>
+                </div>
+                <div class="h-11 mt-1 text-red-500 text-center">
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
                     {% for message in messages %}
-                        <li>{{ message }}</li>
+                    {{ message }}
                     {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-        <div>
-            <input type="submit" value="ログイン" class="m-2 border-4">
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="flex items-center justify-center">
+                    <button type="submit"
+                        class="w-[280px] h-[50px] rounded-xl bg-red-600 text-white text-xl font-bold">ログインする</button>
+                </div>
+            </form>
+
+            <div class="mt-24 mb-3">初めてご利用のお客さまは会員登録をお願いします</div>
+            <div
+                class="w-[280px] h-[50px] flex items-center justify-center rounded-xl bg-yellow-950 text-white text-xl font-bold">
+                <a href="{{ url_for('auth.register_get') }}">
+                    新規会員登録
+                </a>
+            </div>
         </div>
-    </form>
-    <a href="{{ url_for('auth.register_get') }}">
-        <div class="m-5">登録はこちら</div>
-    </a>
+    </div>
 
     {% endblock %}
 </body>

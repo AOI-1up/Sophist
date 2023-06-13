@@ -4,14 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 </head>
 
-<body>
+<body class="tracking-widest">
     <header class="flex flex-col">
         <div class="h-28 bg-black flex justify-center">
-            <div class="w-[1200px] relative">
+            <div class="w-[1200px] min-w-[400px] relative">
                 <div class="w-full h-full absolute flex flex-col items-center justify-center">
                     <img src="../static/favicon.png" class="w-16 h-16" />
                     <div
@@ -19,10 +17,21 @@
                         SOPHIST</div>
                 </div>
                 <div class="w-full h-full absolute flex flex-col items-end justify-center">
-                    <a href="{{ url_for('auth.login_get') }}">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login_get') }}" class="w-24 flex flex-col items-center justify-center">
                         <img src="../static/usericon.png" class="w-9 h-9" />
-                        <div class="text-yellow-300 text-xs mt-2 mr-5">ログイン</div>
+                        <div class="text-yellow-300 text-xs text-center mt-2">
+                            マイページ
+                        </div>
                     </a>
+                    {% else %}
+                    <a href="{{ url_for('auth.login_get') }}" class="w-24 flex flex-col items-center justify-center">
+                        <img src="../static/usericon.png" class="w-9 h-9" />
+                        <div class="text-yellow-300 text-xs text-center mt-2">
+                            ログイン
+                        </div>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

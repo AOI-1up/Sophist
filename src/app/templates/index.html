@@ -10,11 +10,27 @@
 <body>
     {% extends "layout.html" %}
     {% block content %}
-
-    <center class="text-7xl">
-        ようこそ {{ current_user.name }}
-    </center>
-
+    {% if current_user.is_authenticated %}
+        <center class="mt-5 text-7xl">
+            ようこそ {{ current_user.name }}
+        </center>
+        <center class="mt-5 text-xl">
+            ▼ GET ({{ current_user.name }} が作成した問題)
+        </center>
+        <center class="mt-5 text-xl">
+            ▼ GET ({{ current_user.name }} がインポートした問題)
+        </center>
+        <center class="mt-5 text-xl">
+            ▼ GET ({{ current_user.name }} がブックマークした問題)
+        </center>
+        <center class="mt-5 text-xl">
+            ▼ GET ({{ current_user.name }} の履歴)
+        </center>
+    {% else %}
+        <center class="mt-5 text-7xl">
+            ログインしてください
+        </center>
+    {% endif %}
     {% endblock %}
 </body>
 
