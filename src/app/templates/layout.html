@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="tracking-widest">
@@ -18,14 +19,15 @@
                 </div>
                 <div class="w-full h-full absolute flex flex-col items-end justify-center">
                     {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('auth.login_get') }}" class="w-24 flex flex-col items-center justify-center">
+                    <button class="w-16 flex flex-col items-center justify-center mr-4" onClick='alert("Open Menu...")'>
                         <img src="../static/usericon.png" class="w-9 h-9" />
-                        <div class="text-yellow-300 text-xs text-center mt-2">
+                        <div class="text-yellow-300 text-xs text-center mt-2 tracking-widest">
                             マイページ
                         </div>
-                    </a>
+                    </button>
                     {% else %}
-                    <a href="{{ url_for('auth.login_get') }}" class="w-24 flex flex-col items-center justify-center">
+                    <a href="{{ url_for('auth.login_get') }}"
+                        class="w-16 flex flex-col items-center justify-center mr-4">
                         <img src="../static/usericon.png" class="w-9 h-9" />
                         <div class="text-yellow-300 text-xs text-center mt-2">
                             ログイン
@@ -36,12 +38,23 @@
             </div>
         </div>
         <div class="h-12 bg-yellow-950 flex justify-center">
-            <div class="w-[1200px]">
+            <div class="w-[1200px] min-w-[400px] relative">
+                <div class="w-full h-full absolute flex items-center justify-end">
+                    <button
+                        class="w-[220px] h-8 flex items-center justify-center mr-6 bg-white hover:bg-gray-200  border border-gray-300 tracking-widest"
+                        onClick='alert("Open Modal...")'>
+                        <div class="text-gray-900 text-xl">Create & Import</div>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
-    {% block content %}
-    {% endblock %}
+    <main class="flex justify-center">
+        <div class="w-[1200px] min-w-[400px]">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
 </body>
 
 </html>
