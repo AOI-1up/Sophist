@@ -15,7 +15,8 @@
                     <img src="../static/favicon.png" class="w-16 h-16" />
                     <div
                         class="font-serif text-transparent text-3xl bg-clip-text bg-gradient-to-r from-white to-yellow-600">
-                        SOPHIST</div>
+                        SOPHIST
+                    </div>
                 </div>
                 <div class="w-full h-full absolute flex flex-col items-end justify-center">
                     {% if current_user.is_authenticated %}
@@ -40,7 +41,7 @@
         <div class="h-12 bg-yellow-950 flex justify-center">
             <div class="w-[1200px] min-w-[400px] relative">
                 <div class="w-full h-full absolute flex items-center justify-end">
-                    <a href="{{ url_for('auth.logout') }}"
+                    <a href="{{ url_for('main.create_question_get') }}"
                         class="mr-6 font-bold text-white tracking-widest hover:text-yellow-300">
                         Create
                     </a>
@@ -51,6 +52,10 @@
                 </div>
             </div>
         </div>
+        <a href="{{ url_for('main.index_get') }}"
+            class="absolute left-0 right-0 mt-[5px] mx-auto w-[65px] h-[65px]"></a>
+        <a href="{{ url_for('main.index_get') }}"
+            class="absolute left-0 right-0 mt-[70px] mx-auto w-[140px] h-[30px]"></a>
     </header>
     <main class="flex justify-center">
         <div class="w-[1200px] min-w-[400px]">
