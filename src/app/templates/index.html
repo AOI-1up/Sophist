@@ -15,18 +15,18 @@
         ようこそ {{ current_user.name }} 様
     </div>
     <div class="ml-14">
-        <div x-data="{ isOpen: false }" class="mt-5">
+        <div x-data="{ isOpen: false }" class="w-fit mt-5">
             <div @click="isOpen = !isOpen" class="text-xl cursor-pointer">
                 <span x-show="!isOpen">▶</span>
                 <span x-show="isOpen">▼</span>
-                Made List
+                Create List
             </div>
             <ul x-show="isOpen" class="mt-2">
                 <li>GET ({{ current_user.name }} が作成した問題リスト)</li>
             </ul>
         </div>
 
-        <div x-data="{ isOpen: false }" class="mt-5">
+        <div x-data="{ isOpen: false }" class="w-fit mt-5">
             <div @click="isOpen = !isOpen" class="text-xl cursor-pointer">
                 <span x-show="!isOpen">▶</span>
                 <span x-show="isOpen">▼</span>
@@ -37,7 +37,7 @@
             </ul>
         </div>
 
-        <div x-data="{ isOpen: false }" class="mt-5">
+        <div x-data="{ isOpen: false }" class="w-fit mt-5">
             <div @click="isOpen = !isOpen" class="text-xl cursor-pointer">
                 <span x-show="!isOpen">▶</span>
                 <span x-show="isOpen">▼</span>
