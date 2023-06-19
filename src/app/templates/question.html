@@ -10,7 +10,24 @@
 <body>
     {% extends "layout.html" %}
     {% block content %}
-
+    <form action="/question" method="POST" x-data="{ forms: [] }" class="border">
+        <label>List Title:</label>
+        <input type="text" name="list_title" required>
+        <template x-for="(form, index) in forms" :key="index">
+            <div class="border-2 w-fit">
+                <label>Question</label>
+                <input type="text" :name="'question' + (index + 1)" x-model="form.question" required>
+                <label>Answer</label>
+                <input type="text" :name="'answer' + (index + 1)" x-model="form.answer" required>
+            </div>
+        </template>
+        <div class="text-3xl">
+            <button @click="forms.push({ question: '', answer: '' })">+</button>
+        </div>
+        <div>
+            <button type="submit">submit</button>
+        </div>
+    </form>
     {% endblock %}
 </body>
 

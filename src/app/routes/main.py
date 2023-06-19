@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, jsonify
 
 main_bp = Blueprint("main", __name__)
 
@@ -13,3 +13,9 @@ def index_get():
 @main_bp.route("/question", methods=["GET"])
 def create_question_get():
     return render_template("question.html")
+
+
+@main_bp.route("/question", methods=["POST"])
+def create_question_post():
+    form_data = request.form.to_dict()
+    return jsonify(form_data)
