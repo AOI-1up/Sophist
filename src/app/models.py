@@ -2,13 +2,12 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 
-
 # ユーザモデルを定義
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128))
-    mail = db.Column(db.String(128), unique=True)
-    password = db.Column(db.String(128))
+    user_id = db.Column(db.Integer, primary_key=True)  # ユーザID（主キー）
+    name = db.Column(db.String(128))  # 名前
+    mail = db.Column(db.String(128), unique=True)  # メールアドレス
+    password = db.Column(db.String(128))  # パスワード
 
     # パスワードをハッシュ化し格納するメソッドを定義
     def set_password(self, password):
@@ -18,30 +17,38 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+# 解答結果モデルを定義
+class AnswerResult(db.Model):
+    answer_id = db.Column(db.Integer, primary_key=True)  # 解答結果ID（主キー）
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))  # ユーザID（外部キー）
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))  # 問題ID（外部キー）
+    selected_choice = db.Column(db.String(128))  # 選択された選択肢
+
+# 問題リストモデルを定義
+class QuestionList(db.Model):
+    list_id = db.Column(db.Integer, primary_key=True)  # 問題リストID（主キー）
+    list_title = db.Column(db.String(128))  # 問題リストのタイトル
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))  # 作成者のユーザID（外部キー）
+    creator = db.relationship('User', backref=db.backref('question_lists', lazy=True))  # 作成者とのリレーション
 
 # 問題モデルを定義
 class Question(db.Model):
-    question_id = db.Column(db.Integer, primary_key=True)
-    question_title = db.Column(db.String(128))
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    creator = db.relationship(
-        'User', backref=db.backref('questions', lazy=True))
-
+    question_id = db.Column(db.Integer, primary_key=True)  # 問題ID（主キー）
+    question_title = db.Column(db.String(128))  # 問題のタイトル
+    choices = db.relationship('Choice', backref='question', lazy=True)  # 選択肢とのリレーション
+    correct_answer = db.relationship('CorrectAnswer', uselist=False)  # 正解とのリレーション
+    question_list_id = db.Column(db.Integer, db.ForeignKey('question_list.list_id'))  # 問題リストID（外部キー）
 
 # 選択肢モデルを定義
 class Choice(db.Model):
-    choice_id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
-    choice_text = db.Column(db.String(128))
-    question = db.relationship(
-        'Question', backref=db.backref('choices', lazy=True))
-
+    choice_id = db.Column(db.Integer, primary_key=True)  # 選択肢ID（主キー）
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))  # 問題ID（外部キー）
+    choice_text = db.Column(db.String(128))  # 選択肢のテキスト
 
 # 正解モデルを定義
 class CorrectAnswer(db.Model):
-    answer_id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
-    choice_id = db.Column(db.Integer, db.ForeignKey('choice.choice_id'))
-    question = db.relationship(
-        'Question', backref=db.backref('correct_answer', uselist=False))
-    choice = db.relationship('Choice')
+    answer_id = db.Column(db.Integer, primary_key=True)  # 正解ID（主キー）
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))  # 問題ID（外部キー）
+    choice_id = db.Column(db.Integer, db.ForeignKey('choice.choice_id'))  # 選択肢ID（外部キー）
+    question = db.relationship('Question', backref=db.backref('correct_answer', uselist=False))  # 問題とのリレーション
+    choice = db.relationship('Choice')  # 選択肢とのリレーション
