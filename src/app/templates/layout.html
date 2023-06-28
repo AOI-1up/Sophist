@@ -20,12 +20,13 @@
                 </div>
                 <div class="w-full h-full absolute flex flex-col items-end justify-center">
                     {% if current_user.is_authenticated %}
-                    <button class="w-16 flex flex-col items-center justify-center mr-4" onClick='alert("Open Menu...")'>
+                    <a href="{{ url_for('auth.logout') }}"
+                        class="w-16 flex flex-col items-center justify-center mr-4">
                         <img src="../static/usericon.png" class="w-9 h-9" />
                         <div class="text-yellow-300 text-xs text-center mt-2 tracking-widest">
                             マイページ
                         </div>
-                    </button>
+                    </a>
                     {% else %}
                     <a href="{{ url_for('auth.login_get') }}"
                         class="w-16 flex flex-col items-center justify-center mr-4">
