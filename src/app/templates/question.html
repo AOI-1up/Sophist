@@ -11,7 +11,7 @@
     {% extends "layout.html" %}
     {% block content %}
     <div class="my-2 mx-10 font-bold text-3xl">新しい問題リストの作成</div>
-    <form action="/question" method="POST" x-data="{ forms: [] }" class="mt-5 mx-14">
+    <form action="/question" method="POST" x-data="{ forms: [{ question: '', choice1: '', choice2: '', choice3: '', choice4: '', answer: '' }] }" class="mt-5 mx-14">
         <input type="text" placeholder="タイトル..." name="list_title"
             class="w-full h-[50px] border border-yellow-600 rounded-md placeholder-stone-500 text-3xl px-2 mb-6 hover:shadow-xl"
             required>
