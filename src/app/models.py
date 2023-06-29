@@ -44,7 +44,7 @@ class QuestionList(db.Model):
 class Question(db.Model):
 
     question_id = db.Column(db.Integer, primary_key=True)       # 問題ID（主キー）
-    question_title = db.Column(db.String(128))                  # 問題のタイトル
+    question_content = db.Column(db.String(128))                  # 問題のタイトル
     choices = db.relationship(                                  # 選択肢とのリレーション
         'Choice', backref='question', lazy=True)
     correct_answer = db.relationship(                           # 正解とのリレーション
