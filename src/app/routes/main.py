@@ -22,5 +22,8 @@ def create_question_get():
 @main_bp.route("/question", methods=["POST"])
 def create_question_post():
     form_data = request.form.to_dict()
-    print(form_data)
+
+    for key, value in form_data.items():
+        if key.startswith("question"):
+            print(form_data)
     return jsonify(form_data)
