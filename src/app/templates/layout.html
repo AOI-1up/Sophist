@@ -7,9 +7,9 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="tracking-widest" x-data="{ open : false }">
+<body class="tracking-widest overflow-x-hidden" x-data="{ open : false }">
     <header class="flex flex-col">
-        <div class="h-28 bg-black flex justify-center">
+        <div class="w-screen h-28 bg-black flex justify-center">
             <div class="w-[1200px] min-w-[400px] relative">
                 <div class="w-full h-full absolute flex flex-col items-center justify-center">
                     <img src="../static/favicon.png" class="w-16 h-16" />
@@ -39,7 +39,7 @@
                 </div>
             </div>
         </div>
-        <div class="h-12 bg-yellow-950 flex justify-center">
+        <div class="w-screen h-12 bg-yellow-950 flex justify-center">
             <div class="w-[1200px] min-w-[400px] relative">
                 <div class="w-full h-full absolute flex items-center justify-end">
                     <a href="{{ url_for('main.create_question_get') }}"
