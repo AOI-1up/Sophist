@@ -11,7 +11,7 @@
     {% extends "layout.html" %}
     {% block content %}
     <div class="my-2 mx-10 text-3xl">問題リストの作成</div>
-    <form action="/question" method="POST" x-data="{ forms: [{ question: '', choice1: '', choice2: '', choice3: '', choice4: '', answer: '' }] }" class="mt-5 mx-14">
+    <form action="/question" method="POST" x-data="{ forms: [{ question: '', option1: '', option2: '', option3: '', option4: '', answer: '' }] }" class="mt-5 mx-14">
         <input type="text" placeholder="タイトル..." name="list_title"
             class="w-full h-[50px] border border-yellow-600 rounded-md placeholder-stone-500 text-3xl px-2 mb-6 hover:shadow-xl"
             required>
@@ -30,19 +30,19 @@
                             class="px-2 h-[260px] border border-stone-300 rounded-sm text-xl placeholder-stone-500 resize-none"></textarea>
                     </div>
                     <div class="flex flex-col pr-5 pl-2 w-5/12 h-[260px] justify-between">
-                        <input type="text" :name="'question' + (index + 1) + '-1'" placeholder="選択肢1..."
-                            x-model="form.choice1"
+                        <input type="text" :name="'option' + (index + 1) + '-1'" placeholder="選択肢1..."
+                            x-model="form.option1"
                             class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500" required>
-                        <input type="text" :name="'question' + (index + 1) + '-2'" placeholder="選択肢2..."
-                            x-model="form.choice2"
+                        <input type="text" :name="'option' + (index + 1) + '-2'" placeholder="選択肢2..."
+                            x-model="form.option2"
                             class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500 rounded-sm"
                             required>
-                        <input type="text" :name="'question' + (index + 1) + '-3'" placeholder="選択肢3..."
-                            x-model="form.choice3"
+                        <input type="text" :name="'option' + (index + 1) + '-3'" placeholder="選択肢3..."
+                            x-model="form.option3"
                             class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500 rounded-sm"
                             required>
-                        <input type="text" :name="'question' + (index + 1) + '-4'" placeholder="選択肢4..."
-                            x-model="form.choice4"
+                        <input type="text" :name="'option' + (index + 1) + '-4'" placeholder="選択肢4..."
+                            x-model="form.option4"
                             class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500 rounded-sm"
                             required>
                         <div class="bg-white flex items-center h-[60px] border border-stone-300 rounded-sm text-xl">
@@ -64,7 +64,7 @@
         </template>
         <div>
             <button type="button"
-                @click="forms.push({ question: '', choice1: '', choice2: '', choice3: '', choice4: '', answer: '' })"
+                @click="forms.push({ question: '', option1: '', option2: '', option3: '', option4: '', answer: '' })"
                 class="p-1 border border-yellow-600 rounded-xl">
                 <img src="../static/plusicon.png" class="w-7 h-7" />
             </button>
