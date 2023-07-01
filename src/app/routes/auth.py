@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 auth_bp = Blueprint("auth", __name__)
 
 
-# ユーザー登録用 API
+# ユーザー登録ページ
 @auth_bp.route("/register", methods=["GET"])
 def register_get():
     if current_user.is_authenticated:
@@ -16,6 +16,7 @@ def register_get():
     return render_template("register.html")
 
 
+# ユーザー登録 API
 @auth_bp.route("/register", methods=["POST"])
 def register_post():
     user_name = request.form.get("user_name")
@@ -40,7 +41,7 @@ def register_post():
     return redirect(url_for("auth.login_get"))
 
 
-# ユーザーログイン用 API
+# ログインページ
 @auth_bp.route("/login", methods=["GET"])
 def login_get():
     if current_user.is_authenticated:
@@ -49,6 +50,7 @@ def login_get():
     return render_template("login.html")
 
 
+# ログイン API
 @auth_bp.route("/login", methods=["POST"])
 def login_post():
     mail = request.form.get("mail")
@@ -67,7 +69,7 @@ def login_post():
     return redirect(url_for("main.index_get"))
 
 
-# ユーザーログアウト用 API
+# ログアウト API
 @auth_bp.route("/logout")
 def logout():
     logout_user()
