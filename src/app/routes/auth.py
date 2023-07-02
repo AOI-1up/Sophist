@@ -13,7 +13,7 @@ def register_get():
     if current_user.is_authenticated:
         return redirect(url_for("main.index_get"))
 
-    return render_template("register.html")
+    return render_template("auth/register.html")
 
 
 # ユーザー登録 API
@@ -47,7 +47,7 @@ def login_get():
     if current_user.is_authenticated:
         return redirect(url_for("main.index_get"))
 
-    return render_template("login.html")
+    return render_template("auth/login.html")
 
 
 # ログイン API

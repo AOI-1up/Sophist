@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Answer Question / SOPHIST</title>
+    <link rel="icon" href="../static/favicon.png">
+</head>
+
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    Title: {{ list_title }}
+
+    <form method="POST">
+        {% for i in range(questions|length) %}
+        <div>
+            <div>
+                Question.{{i+1}}: {{ questions[i] }}
+            </div>
+            <div class="flex flex-col">
+                {% for j in range(options[i]|length) %}
+                <label>
+                    <input type="radio" name="question{{i+1}}" value="{{j+1}}" required>
+                    {{ options[i][j] }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <button type="submit">送信</button>
+        <button type="reset">回答をクリア</button>
+    </form>
+    {% endblock %}
+</body>
+
+</html>
