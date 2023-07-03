@@ -15,5 +15,5 @@ spec:
         app: python
     spec:
       containers:
-      - image: #あとで書こうね！
+      - image: inanamu/sophist
         name: python
