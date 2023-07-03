@@ -140,6 +140,7 @@ def question_content_post(list_id):
 # DB リセット API
 @main_bp.route("/reset", methods=["GET"])
 def reset():
+    db.session.query(AnswerResult).delete()
     db.session.query(Option).delete()
     db.session.query(Question).delete()
     db.session.query(QuestionList).delete()
