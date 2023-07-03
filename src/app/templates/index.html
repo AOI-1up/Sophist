@@ -14,6 +14,8 @@
     <div class="ml-10 my-2 text-2xl text-yellow-600">
         ようこそ {{ current_user.name }} 様
     </div>
+
+    <!--アコーディオン-->
     <div class="ml-14">
         <div x-data="{ isOpen: true }" class="w-fit h-fit mt-5">
             <div @click="isOpen = !isOpen" class="text-xl cursor-pointer">
@@ -22,14 +24,28 @@
                 Created List
             </div>
             <ul x-show="isOpen" class="mt-2">
-                <li class="border border-yellow-600">
+                <!--リストカード-->
+                <li class="flex flex-wrap">
                     {% for index in range(list_titles|length) %}
                     {% set list_title = list_titles[index] %}
                     {% set list_id = list_ids[index] %}
-                    <div class="border border-yellow-600">
-                        <a href="{{ url_for('main.question_content_get', list_id=list_id)}}">
-                            {{ list_title }}
-                        </a>
+                    <div class="m-2 max-w-[200px] min-w-[200px] max-h-24 min-h-[96px] border rounded-md border-yellow-600 overflow-hidden hover:shadow-xl">
+                        <div class="flex justify-between" x-data="{open_etc: false}">
+                            <a href="{{ url_for('main.question_content_get', list_id=list_id)}}" class="m-2 text-xl cursor-pointer">
+                                {{ list_title }}
+                            </a>
+                            <div>
+                                <span class="cursor-pointer font-bold text-xl" @click="open_etc = true">︙</span>
+        
+                                <!--リスト詳細メニュー-->
+                                <span x-show="open_etc" @click.away="open_etc = false">
+                                    <div class="absolute flex flex-col p-2 bg-gray-50 rounded rop-shadow-2xl divide-y">
+                                        <a href="">編集</a>
+                                        <a href="">回答データ</a>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     {% endfor %}
                 </li>
