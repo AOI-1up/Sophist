@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import current_user
 from app import db
-from app.models import QuestionList, Question, Option, AnswerResult
+from app.models import User, QuestionList, Question, Option, AnswerResult
 
 main_bp = Blueprint("main", __name__)
 
@@ -89,6 +89,8 @@ def question_content_get(list_id):
 
     # 問題リストの内容を格納
     list_title = question_list.list_title
+    creator = User.query.get(question_list.creator_id)
+    creator_name = creator.name
     questions = [question.question_text for question in question_list.questions]
     options = []
     for question in question_list.questions:
@@ -98,6 +100,7 @@ def question_content_get(list_id):
     return render_template(
         "question/question_content.html",
         list_title=list_title,
+        creator_name= creator_name,
         questions=questions,
         options=options,
     )
