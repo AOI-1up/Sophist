@@ -113,6 +113,7 @@ def question_content_post(list_id):
     question_list = QuestionList.query.get(list_id)
     if not question_list:
         return render_template("not_found.html")
+    correct_answers = [question.correct_answer for question in question_list.questions]
 
     # ユーザの回答をデータベースに格納
     results = []
@@ -131,20 +132,31 @@ def question_content_post(list_id):
         db.session.commit()
 
         # 正答とユーザの回答を比較
-        correct_answer = question_list.questions[question_key - 1].correct_answer
-        if correct_answer == user_answer:
-            results.append(key + ": OK!")
+        if correct_answers[question_key - 1] == user_answer:
+            results.append(user_answer)
         else:
-            results.append(key + ": NG!")
+            results.append(user_answer)
 
     # 問題リストの内容を取得
     list_title = question_list.list_title
-    answerer_name = User.query.get(answerer_id).name
+    try:
+        answerer_name = User.query.get(answerer_id).name
+    except:
+        return render_template("not_found.html")
+    questions = [question.question_text for question in question_list.questions]
+    options = []
+    for question in question_list.questions:
+        question_options = [option.option_text for option in question.options]
+        options.append(question_options)
 
     return render_template(
         "question/question_result.html",
+        list_id=list_id,
         list_title=list_title,
+        questions=questions,
+        options=options,
         results=results,
+        correct_answers=correct_answers,
         answerer_name=answerer_name,
     )
 
