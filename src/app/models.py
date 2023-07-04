@@ -20,6 +20,9 @@ class User(UserMixin, db.Model):
     creator = db.relationship("QuestionList", backref="user", lazy=True)
     # 問題回答者との関係
     answerer = db.relationship("AnswerResult", backref="user", lazy=True)
+    # インポート・ブックマークとの関係
+    import_user = db.relationship("ImportList", backref="user", lazy=True)
+    bookmark_user = db.relationship("BookmarkList", backref="user", lazy=True)
 
     # パスワードをハッシュ化し格納するメソッドを定義
     def set_password(self, password):
@@ -45,6 +48,9 @@ class QuestionList(db.Model):
     questions = db.relationship("Question", backref="question_list", lazy=True)
     # 回答結果との関係
     answer_results = db.relationship("AnswerResult", backref="question_list", lazy=True)
+    # インポート・ブックマークとの関係
+    import_list = db.relationship("ImportList", backref="question_list", lazy=True)
+    bookmark_list = db.relationship("BookmarkList", backref="question_list", lazy=True)
 
 
 # 問題のモデルを定義
@@ -92,3 +98,19 @@ class AnswerResult(db.Model):
 
     # 回答結果の内容
     user_answer = db.Column(db.Integer)
+
+
+# インポートモデルを定義
+class ImportList(db.Model):
+    __tablename__ = "import_list"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    list_id = db.Column(db.Integer, db.ForeignKey("question_list.id"), nullable=False)
+
+
+# ブックマークモデルを定義
+class BookmarkList(db.Model):
+    __tablename__ = "bookmark_list"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    list_id = db.Column(db.Integer, db.ForeignKey("question_list.id"), nullable=False)

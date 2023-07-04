@@ -1,7 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
 from app import db
-from app.models import User, QuestionList, Question, Option, AnswerResult
+from app.models import (
+    User,
+    QuestionList,
+    Question,
+    Option,
+    AnswerResult,
+    ImportList,
+    BookmarkList,
+)
 
 main_bp = Blueprint("main", __name__)
 
@@ -10,19 +18,31 @@ main_bp = Blueprint("main", __name__)
 @main_bp.route("/", methods=["GET"])
 def index_get():
     if current_user.is_authenticated:
-        question_lists = QuestionList.query.filter_by(creator_id=current_user.id).all()
-        created_list_ids = [question_list.id for question_list in question_lists]
+        created_lists = QuestionList.query.filter_by(creator_id=current_user.id).all()
+        created_list_ids = [created_list.id for created_list in created_lists]
         created_list_titles = [
-            question_list.list_title for question_list in question_lists
+            question_list.list_title for question_list in created_lists
         ]
+
+        imported_lists = ImportList.query.filter_by(user_id=current_user.id).all()
+        imported_list_ids = [imported_list.list_id for imported_list in imported_lists]
+        imported_list_titles = [
+            QuestionList.query.get(imported_list.list_id).list_title
+            for imported_list in imported_lists
+        ]
+
     else:
         created_list_ids = []
         created_list_titles = []
+        imported_list_ids = []
+        imported_list_titles = []
 
     return render_template(
         "index.html",
         created_list_ids=created_list_ids,
         created_list_titles=created_list_titles,
+        imported_list_ids=imported_list_ids,
+        imported_list_titles=imported_list_titles,
     )
 
 
@@ -167,9 +187,41 @@ def question_content_post(list_id):
     )
 
 
+# 問題リストののインポート API
+@main_bp.route("/question/import", methods=["POST"])
+def import_question_post():
+    form_data = request.form.to_dict()
+    if form_data.get("import") != "":
+        try:
+            list_id = int(form_data.get("import"))
+        except ValueError:
+            return redirect(url_for("main.index_get"))
+    else:
+        return redirect(url_for("main.index_get"))
+
+    question_list = QuestionList.query.get(list_id)
+    if question_list is None:
+        return redirect(url_for("main.index_get"))
+
+    user_id = current_user.id
+    existing_import = ImportList.query.filter_by(
+        list_id=list_id, user_id=user_id
+    ).first()
+    if existing_import is not None:
+        return redirect(url_for("main.index_get"))
+
+    import_list = ImportList(list_id=list_id, user_id=user_id)
+    db.session.add(import_list)
+    db.session.commit()
+
+    return redirect(url_for("main.index_get"))
+
+
 # DB リセット API
 @main_bp.route("/reset", methods=["GET"])
 def reset():
+    db.session.query(ImportList).delete()
+    db.session.query(BookmarkList).delete()
     db.session.query(AnswerResult).delete()
     db.session.query(Option).delete()
     db.session.query(Question).delete()

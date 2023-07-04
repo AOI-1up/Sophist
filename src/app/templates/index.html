@@ -30,8 +30,8 @@
                     {% set list_title = created_list_titles[index] %}
                     {% set list_id = created_list_ids[index] %}
                     <div
-                        class="m-2 w-[200px] h-[120px] border rounded-md border-yellow-600 bg-gray-50 overflow-hidden hover:shadow-xl flex flex-col items-center">
-                        <div class="w-[200px] pl-2 bg-white flex justify-between items-center border-b border-stone-300 rounded-md"
+                        class="m-2 w-[200px] h-[125px] border rounded-md border-yellow-600 bg-gray-50 overflow-hidden hover:shadow-xl flex flex-col items-center">
+                        <div class="w-[200px] pl-2 bg-white flex justify-between items-center border-b-2 border-stone-300 rounded-md"
                             x-data="{open_etc: false}">
                             <div class="text-xl">List ID: {{ list_id }}</div>
                             <div>
@@ -39,9 +39,9 @@
 
                                 <!--リスト詳細メニュー-->
                                 <span x-show="open_etc" @click.away="open_etc = false">
-                                    <div class="absolute flex flex-col p-2 bg-gray-50 rounded rop-shadow-2xl divide-y">
-                                        <a href="{{ url_for('main.create_question_get')}}">編集</a>
-                                        <a href="">回答データ</a>
+                                    <div
+                                        class="absolute flex flex-col p-2 bg-white rounded rop-shadow-2xl divide-y border border-gray-200">
+                                        <a href="{{list_id}}" class="py-2">ブックマークから削除</a>
                                     </div>
                                 </span>
                             </div>
@@ -69,8 +69,8 @@
                     {% set list_title = created_list_titles[index] %}
                     {% set list_id = created_list_ids[index] %}
                     <div
-                        class="m-2 w-[200px] h-[120px] border rounded-md border-yellow-600 bg-gray-50 overflow-hidden hover:shadow-xl flex flex-col items-center">
-                        <div class="w-[200px] pl-2 bg-white flex justify-between items-center border-b border-stone-300 rounded-md"
+                        class="m-2 w-[200px] h-[125px] border rounded-md border-yellow-600 bg-gray-50 overflow-hidden hover:shadow-xl flex flex-col items-center">
+                        <div class="w-[200px] pl-2 bg-white flex justify-between items-center border-b-2 border-stone-300 rounded-md"
                             x-data="{open_etc: false}">
                             <div class="text-xl">List ID: {{ list_id }}</div>
                             <div>
@@ -78,9 +78,11 @@
 
                                 <!--リスト詳細メニュー-->
                                 <span x-show="open_etc" @click.away="open_etc = false">
-                                    <div class="absolute flex flex-col p-2 bg-gray-50 rounded rop-shadow-2xl divide-y">
-                                        <a href="{{ url_for('main.create_question_get')}}">編集</a>
-                                        <a href="">回答データ</a>
+                                    <div
+                                        class="absolute flex flex-col p-2 bg-white rounded rop-shadow-2xl border border-gray-200">
+                                        <a href="{{list_id}}" class="py-2">回答データ</a>
+                                        <a href="{{list_id}}" class="py-2 border-y border-gray-300">ブックマークに追加</a>
+                                        <a href="{{list_id}}" class="py-2">問題リストを削除</a>
                                     </div>
                                 </span>
                             </div>
@@ -104,12 +106,12 @@
             <ul x-show="isOpen" class="mt-2">
                 <!--リストカード-->
                 <li class="flex flex-wrap">
-                    {% for index in range(created_list_titles|length) %}
-                    {% set list_title = created_list_titles[index] %}
-                    {% set list_id = created_list_ids[index] %}
+                    {% for index in range(imported_list_titles|length) %}
+                    {% set list_title = imported_list_titles[index] %}
+                    {% set list_id = imported_list_ids[index] %}
                     <div
-                        class="m-2 w-[200px] h-[120px] border rounded-md border-yellow-600 bg-gray-50 overflow-hidden hover:shadow-xl flex flex-col items-center">
-                        <div class="w-[200px] pl-2 bg-white flex justify-between items-center border-b border-stone-300 rounded-md"
+                        class="m-2 w-[200px] h-[125px] border rounded-md border-yellow-600 bg-gray-50 overflow-hidden hover:shadow-xl flex flex-col items-center">
+                        <div class="w-[200px] pl-2 bg-white flex justify-between items-center border-b-2 border-stone-300 rounded-md"
                             x-data="{open_etc: false}">
                             <div class="text-xl">List ID: {{ list_id }}</div>
                             <div>
@@ -117,9 +119,10 @@
 
                                 <!--リスト詳細メニュー-->
                                 <span x-show="open_etc" @click.away="open_etc = false">
-                                    <div class="absolute flex flex-col p-2 bg-gray-50 rounded rop-shadow-2xl divide-y">
-                                        <a href="{{ url_for('main.create_question_get')}}">編集</a>
-                                        <a href="">回答データ</a>
+                                    <div
+                                        class="absolute flex flex-col p-2 bg-white rounded rop-shadow-2xl divide-y border border-gray-200">
+                                        <a href="{{list_id}}" class="py-2">ブックマークに追加</a>
+                                        <a href="{{list_id}}" class="py-2 border-t border-gray-300">インポートから削除</a>
                                     </div>
                                 </span>
                             </div>
