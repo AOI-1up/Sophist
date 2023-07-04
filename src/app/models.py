@@ -44,7 +44,7 @@ class QuestionList(db.Model):
     # 問題との関係
     questions = db.relationship("Question", backref="question_list", lazy=True)
     # 回答結果との関係
-    user_answer = db.relationship("AnswerResult", backref="question_list", lazy=True)
+    answer_results = db.relationship("AnswerResult", backref="question_list", lazy=True)
 
 
 # 問題のモデルを定義
@@ -63,7 +63,7 @@ class Question(db.Model):
     # 選択肢との関係
     options = db.relationship("Option", backref="question", lazy=True)
     # 回答結果との関係
-    user_answer = db.relationship("AnswerResult", backref="question", lazy=True)
+    answer_results = db.relationship("AnswerResult", backref="question", lazy=True)
 
 
 # 選択肢モデルを定義

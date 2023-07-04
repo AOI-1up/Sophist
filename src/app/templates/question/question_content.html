@@ -10,28 +10,44 @@
 <body>
     {% extends "layout.html" %}
     {% block content %}
-    Title: {{ list_title }}
 
-    <form method="POST">
+    <div class="my-2 mx-10 text-3xl">
+        {{ list_title }}
+    </div>
+    <div class="mx-10">
+        Created by <span class="font-bold">{{ creator_name }}</span>
+    </div>
+
+    <form method="POST" class="mt-5 mx-14">
         {% for i in range(questions|length) %}
-        <div>
-            <div>
-                Question.{{i+1}}: {{ questions[i] }}
+        <div class="w-full h-fit border border-yellow-600 rounded-md mb-6 bg-gray-50 hover:shadow-xl">
+            <div class="h-[45px] text-2xl border-b-2 border-stone-300 rounded-md bg-white pl-2 flex items-center">
+                {{ questions[i] }}
             </div>
-            <div class="flex flex-col">
+            <div class="flex flex-col my-3 mx-3 border border-stone-300 rounded-sm bg-white">
                 {% for j in range(options[i]|length) %}
-                <label>
-                    <input type="radio" name="question{{i+1}}" value="{{j+1}}" required>
-                    {{ options[i][j] }}
+                <label class="my-2 mx-2">
+                    <input type="radio" name="question{{i+1}}" value="{{j+1}}" class="ml-2 transform scale-150"
+                        required>
+                    <span class="ml-2 text-xl">{{ options[i][j] }}</span>
                 </label>
                 {% endfor %}
             </div>
         </div>
         {% endfor %}
 
-        <button type="submit">送信</button>
-        <button type="reset">回答をクリア</button>
+        <div class="flex justify-between">
+            <div class="w-[90px]"></div>
+            <button type="submit"
+                class="mb-10 w-[280px] h-[50px] rounded-xl bg-red-600 text-white text-xl font-bold">送信する</button>
+            <div class="w-[90px] h-[50px] flex justify-end items-center">
+                <button type="reset" class="underline">
+                    回答をクリア
+                </button>
+            </div>
+        </div>
     </form>
+
     {% endblock %}
 </body>
 

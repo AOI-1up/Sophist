@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import current_user
 from app import db
-from app.models import QuestionList, Question, Option, AnswerResult
+from app.models import User, QuestionList, Question, Option, AnswerResult
 
 main_bp = Blueprint("main", __name__)
 
@@ -50,14 +50,14 @@ def create_question_post():
                     question["option"].append(form_data[option_key])
             json_data["question"][question_num] = question
 
-    # 問題リストの内容を格納
+    # 問題リストの内容をデータベースに格納
     creator_id = current_user.id
     list_title = json_data["list_title"]
     question_list = QuestionList(creator_id=creator_id, list_title=list_title)
     db.session.add(question_list)
     db.session.commit()
 
-    # 問題の内容を格納
+    # 問題の内容をデータベースに格納
     list_id = question_list.id
     questions_data = json_data["question"]
     for key, question_data in questions_data.items():
@@ -69,7 +69,7 @@ def create_question_post():
         db.session.add(question)
         db.session.commit()
 
-        # 問題の選択肢を格納
+        # 問題の選択肢をデータベースに格納
         question_id = question.id
         options_data = question_data["option"]
         for option_text in options_data:
@@ -87,8 +87,10 @@ def question_content_get(list_id):
     if not question_list:
         return render_template("not_found.html")
 
-    # 問題リストの内容を格納
+    # 問題リストの内容を取得
     list_title = question_list.list_title
+    creator = User.query.get(question_list.creator_id)
+    creator_name = creator.name
     questions = [question.question_text for question in question_list.questions]
     options = []
     for question in question_list.questions:
@@ -98,6 +100,7 @@ def question_content_get(list_id):
     return render_template(
         "question/question_content.html",
         list_title=list_title,
+        creator_name=creator_name,
         questions=questions,
         options=options,
     )
@@ -108,9 +111,12 @@ def question_content_get(list_id):
 def question_content_post(list_id):
     form_data = request.form.to_dict()
     question_list = QuestionList.query.get(list_id)
-    results = []
+    if not question_list:
+        return render_template("not_found.html")
+    correct_answers = [question.correct_answer for question in question_list.questions]
 
-    # ユーザの回答を格納
+    # ユーザの回答をデータベースに格納
+    results = []
     for key, value in form_data.items():
         question_key = int(key[8:])
         answerer_id = current_user.id
@@ -126,14 +132,32 @@ def question_content_post(list_id):
         db.session.commit()
 
         # 正答とユーザの回答を比較
-        correct_answer = question_list.questions[question_key - 1].correct_answer
-        if correct_answer == user_answer:
-            results.append(key + ": OK!")
+        if correct_answers[question_key - 1] == user_answer:
+            results.append(user_answer)
         else:
-            results.append(key + ": NG!")
+            results.append(user_answer)
+
+    # 問題リストの内容を取得
+    list_title = question_list.list_title
+    try:
+        answerer_name = User.query.get(answerer_id).name
+    except:
+        return render_template("not_found.html")
+    questions = [question.question_text for question in question_list.questions]
+    options = []
+    for question in question_list.questions:
+        question_options = [option.option_text for option in question.options]
+        options.append(question_options)
 
     return render_template(
-        "question/question_result.html", form_data=form_data, results=results
+        "question/question_result.html",
+        list_id=list_id,
+        list_title=list_title,
+        questions=questions,
+        options=options,
+        results=results,
+        correct_answers=correct_answers,
+        answerer_name=answerer_name,
     )
 
 
