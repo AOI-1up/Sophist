@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
 from app import db
 from app.models import User, QuestionList, Question, Option, AnswerResult
@@ -11,13 +11,19 @@ main_bp = Blueprint("main", __name__)
 def index_get():
     if current_user.is_authenticated:
         question_lists = QuestionList.query.filter_by(creator_id=current_user.id).all()
-        list_ids = [question_list.id for question_list in question_lists]
-        list_titles = [question_list.list_title for question_list in question_lists]
+        created_list_ids = [question_list.id for question_list in question_lists]
+        created_list_titles = [
+            question_list.list_title for question_list in question_lists
+        ]
     else:
-        list_ids = []
-        list_titles = []
+        created_list_ids = []
+        created_list_titles = []
 
-    return render_template("index.html", list_ids=list_ids, list_titles=list_titles)
+    return render_template(
+        "index.html",
+        created_list_ids=created_list_ids,
+        created_list_titles=created_list_titles,
+    )
 
 
 # 問題作成ページ
