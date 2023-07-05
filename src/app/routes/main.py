@@ -142,7 +142,7 @@ def delete_question(list_id):
     return redirect(url_for("main.index_get"))
 
 
-# 回答機能
+# リスト回答機能
 ## 問題リストの回答ページ
 @main_bp.route("/question/<list_id>", methods=["GET"])
 def question_content_get(list_id):
@@ -222,6 +222,13 @@ def question_content_post(list_id):
         correct_answers=correct_answers,
         answerer_name=answerer_name,
     )
+
+
+# 回答結果機能
+## 回答結果の一覧ページ
+@main_bp.route("/question/result/<list_id>", methods=["GET"])
+def question_result(list_id):
+    return render_template("question/question_result_list.html")
 
 
 # インポート機能
