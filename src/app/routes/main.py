@@ -31,11 +31,22 @@ def index_get():
             for imported_list in imported_lists
         ]
 
+        bookmarked_lists = BookmarkList.query.filter_by(user_id=current_user.id).all()
+        bookmarked_list_ids = [
+            bookmarked_list.list_id for bookmarked_list in bookmarked_lists
+        ]
+        bookmarked_list_titles = [
+            QuestionList.query.get(bookmarked_list.list_id).list_title
+            for bookmarked_list in bookmarked_lists
+        ]
+
     else:
         created_list_ids = []
         created_list_titles = []
         imported_list_ids = []
         imported_list_titles = []
+        bookmarked_list_ids = []
+        bookmarked_list_titles = []
 
     return render_template(
         "index.html",
@@ -43,10 +54,13 @@ def index_get():
         created_list_titles=created_list_titles,
         imported_list_ids=imported_list_ids,
         imported_list_titles=imported_list_titles,
+        bookmarked_list_ids=bookmarked_list_ids,
+        bookmarked_list_titles=bookmarked_list_titles,
     )
 
 
-# 問題作成ページ
+# 問題リスト機能
+## リスト作成ページ
 @main_bp.route("/question", methods=["GET"])
 def create_question_get():
     if not current_user.is_authenticated:
@@ -55,7 +69,7 @@ def create_question_get():
     return render_template("question/question.html")
 
 
-# 問題作成 API
+## リスト作成 API
 @main_bp.route("/question", methods=["POST"])
 def create_question_post():
     form_data = request.form.to_dict()
@@ -106,7 +120,30 @@ def create_question_post():
     return redirect(url_for("main.index_get"))
 
 
-# 問題リストの回答ページ
+## リスト削除 API
+@main_bp.route("/question/delete/<list_id>", methods=["GET"])
+def delete_question(list_id):
+    question_list = QuestionList.query.filter_by(
+        id=list_id, creator_id=current_user.id
+    ).first()
+    if question_list:
+        try:
+            BookmarkList.query.filter_by(list_id=question_list.id).delete()
+            ImportList.query.filter_by(list_id=question_list.id).delete()
+            AnswerResult.query.filter_by(list_id=question_list.id).delete()
+            questions = question_list.questions
+            for question in questions:
+                Option.query.filter_by(question_id=question.id).delete()
+            Question.query.filter_by(list_id=question_list.id).delete()
+            db.session.delete(question_list)
+            db.session.commit()
+        except Exception:
+            return redirect(url_for("main.index_get"))
+    return redirect(url_for("main.index_get"))
+
+
+# 回答機能
+## 問題リストの回答ページ
 @main_bp.route("/question/<list_id>", methods=["GET"])
 def question_content_get(list_id):
     question_list = QuestionList.query.get(list_id)
@@ -132,7 +169,7 @@ def question_content_get(list_id):
     )
 
 
-# 問題リストの回答 API
+## 問題リストの回答 API
 @main_bp.route("/question/<list_id>", methods=["POST"])
 def question_content_post(list_id):
     form_data = request.form.to_dict()
@@ -187,9 +224,10 @@ def question_content_post(list_id):
     )
 
 
-# 問題リストののインポート API
+# インポート機能
+## 問題リストのインポート API
 @main_bp.route("/question/import", methods=["POST"])
-def import_question_post():
+def import_question():
     form_data = request.form.to_dict()
     if form_data.get("import") != "":
         try:
@@ -217,7 +255,59 @@ def import_question_post():
     return redirect(url_for("main.index_get"))
 
 
-# DB リセット API
+## インポートの削除 API
+@main_bp.route("/question/import/delete/<list_id>", methods=["GET"])
+def delete_import(list_id):
+    import_list = ImportList.query.filter_by(
+        list_id=list_id, user_id=current_user.id
+    ).first()
+    if import_list:
+        try:
+            db.session.delete(import_list)
+            db.session.commit()
+        except Exception:
+            return redirect(url_for("main.index_get"))
+    return redirect(url_for("main.index_get"))
+
+
+# ブックマーク機能
+## 問題リストのブックマーク API
+@main_bp.route("/question/bookmark/<list_id>", methods=["GET"])
+def bookmark_question(list_id):
+    question_list = QuestionList.query.get(list_id)
+    if question_list is None:
+        return redirect(url_for("main.index_get"))
+
+    user_id = current_user.id
+    existing_bookmark = BookmarkList.query.filter_by(
+        list_id=list_id, user_id=user_id
+    ).first()
+    if existing_bookmark is not None:
+        return redirect(url_for("main.index_get"))
+
+    bookmark_list = BookmarkList(list_id=list_id, user_id=user_id)
+    db.session.add(bookmark_list)
+    db.session.commit()
+
+    return redirect(url_for("main.index_get"))
+
+
+## ブックマークの削除 API
+@main_bp.route("/question/bookmark/delete/<list_id>", methods=["GET"])
+def delete_bookmark(list_id):
+    bookmark_list = BookmarkList.query.filter_by(
+        list_id=list_id, user_id=current_user.id
+    ).first()
+    if bookmark_list:
+        try:
+            db.session.delete(bookmark_list)
+            db.session.commit()
+        except Exception:
+            return redirect(url_for("main.index_get"))
+    return redirect(url_for("main.index_get"))
+
+
+# DB リセット機能
 @main_bp.route("/reset", methods=["GET"])
 def reset():
     db.session.query(ImportList).delete()
