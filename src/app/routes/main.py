@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
 from app import db
+from sqlalchemy import func
 from app.models import (
     User,
     QuestionList,
@@ -73,6 +74,8 @@ def create_question_get():
 @main_bp.route("/question", methods=["POST"])
 def create_question_post():
     form_data = request.form.to_dict()
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
 
     # フォームのデータを変換
     json_data = {"list_title": form_data["list_title"], "question": {}}
@@ -123,6 +126,8 @@ def create_question_post():
 ## リスト削除 API
 @main_bp.route("/question/delete/<list_id>", methods=["GET"])
 def delete_question(list_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
     question_list = QuestionList.query.filter_by(
         id=list_id, creator_id=current_user.id
     ).first()
@@ -146,6 +151,8 @@ def delete_question(list_id):
 ## 問題リストの回答ページ
 @main_bp.route("/question/<list_id>", methods=["GET"])
 def question_content_get(list_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
     question_list = QuestionList.query.get(list_id)
     if not question_list:
         return render_template("not_found.html")
@@ -173,12 +180,21 @@ def question_content_get(list_id):
 @main_bp.route("/question/<list_id>", methods=["POST"])
 def question_content_post(list_id):
     form_data = request.form.to_dict()
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
     question_list = QuestionList.query.get(list_id)
     if not question_list:
         return render_template("not_found.html")
     correct_answers = [question.correct_answer for question in question_list.questions]
 
     # ユーザの回答をデータベースに格納
+    max_result_list_id = db.session.query(
+        func.max(AnswerResult.result_list_id)
+    ).scalar()
+    if max_result_list_id == None:
+        result_list_id = 0
+    else:
+        result_list_id = max_result_list_id + 1
     results = []
     for key, value in form_data.items():
         question_key = int(key[8:])
@@ -186,6 +202,7 @@ def question_content_post(list_id):
         question_id = question_list.questions[question_key - 1].id
         user_answer = int(value)
         answer_result = AnswerResult(
+            result_list_id=result_list_id,
             answerer_id=answerer_id,
             list_id=list_id,
             question_id=question_id,
@@ -193,12 +210,7 @@ def question_content_post(list_id):
         )
         db.session.add(answer_result)
         db.session.commit()
-
-        # 正答とユーザの回答を比較
-        if correct_answers[question_key - 1] == user_answer:
-            results.append(user_answer)
-        else:
-            results.append(user_answer)
+        results.append(user_answer)
 
     # 問題リストの内容を取得
     list_title = question_list.list_title
@@ -228,6 +240,8 @@ def question_content_post(list_id):
 ## 回答結果の一覧ページ
 @main_bp.route("/question/result/<list_id>", methods=["GET"])
 def question_result(list_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
     question_list = QuestionList.query.get(list_id)
     if not question_list:
         return render_template("not_found.html")
@@ -240,23 +254,70 @@ def question_result(list_id):
 
     # 問題リストの内容を取得
     list_title = question_list.list_title
-    creator_name = creator.name
 
     # 問題リストの回答状況を取得
     answer_results = AnswerResult.query.filter_by(list_id=list_id).all()
-    answer_result_ids = [result.id for result in answer_results]
+    result_list_ids = [result.result_list_id for result in answer_results]
+    if not result_list_ids:
+        return render_template("not_found.html")
+    result_list_ids_unique = list(set(result_list_ids))
+    count = int(
+        (len(result_list_ids) - len(result_list_ids_unique))
+        / len(result_list_ids_unique)
+    )
     answerer_ids = [result.answerer_id for result in answer_results]
     answerer_names = []
-    for answerer_id in answerer_ids:
+    for i, answerer_id in enumerate(answerer_ids):
+        if i % (count + 1) != 0:
+            continue
         user = User.query.get(answerer_id)
         answerer_names.append(user.name)
 
     return render_template(
         "question/question_result_list.html",
+        list_id=list_id,
         list_title=list_title,
-        creator_name=creator_name,
-        answer_result_ids=answer_result_ids,
-        answerer_names=answerer_names
+        result_list_ids=result_list_ids_unique,
+        answerer_names=answerer_names,
+    )
+
+
+## 回答結果の詳細ページ
+@main_bp.route("/question/result/<list_id>/<result_list_id>", methods=["GET"])
+def question_result_detail(list_id, result_list_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
+    question_list = QuestionList.query.get(list_id)
+    if not question_list:
+        return render_template("not_found.html")
+
+    # 問題リストの内容を取得
+    list_title = question_list.list_title
+    questions = [question.question_text for question in question_list.questions]
+    options = []
+    for question in question_list.questions:
+        question_options = [option.option_text for option in question.options]
+        options.append(question_options)
+    correct_answers = [question.correct_answer for question in question_list.questions]
+
+    # ユーザの回答結果を取得
+    answer_results = AnswerResult.query.filter_by(result_list_id=result_list_id)
+    results = []
+    for result in answer_results:
+        results.append(result.user_answer)
+    answerer_name = User.query.get(
+        AnswerResult.query.filter_by(result_list_id=result_list_id).first().answerer_id
+    ).name
+
+    return render_template(
+        "question/question_result_detail.html",
+        list_id=list_id,
+        list_title=list_title,
+        questions=questions,
+        options=options,
+        results=results,
+        correct_answers=correct_answers,
+        answerer_name=answerer_name,
     )
 
 
@@ -264,6 +325,9 @@ def question_result(list_id):
 ## 問題リストのインポート API
 @main_bp.route("/question/import", methods=["POST"])
 def import_question():
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
+
     form_data = request.form.to_dict()
     if form_data.get("import") != "":
         try:
@@ -294,6 +358,8 @@ def import_question():
 ## インポートの削除 API
 @main_bp.route("/question/import/delete/<list_id>", methods=["GET"])
 def delete_import(list_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
     import_list = ImportList.query.filter_by(
         list_id=list_id, user_id=current_user.id
     ).first()
@@ -310,6 +376,8 @@ def delete_import(list_id):
 ## 問題リストのブックマーク API
 @main_bp.route("/question/bookmark/<list_id>", methods=["GET"])
 def bookmark_question(list_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
     question_list = QuestionList.query.get(list_id)
     if question_list is None:
         return redirect(url_for("main.index_get"))
@@ -331,6 +399,8 @@ def bookmark_question(list_id):
 ## ブックマークの削除 API
 @main_bp.route("/question/bookmark/delete/<list_id>", methods=["GET"])
 def delete_bookmark(list_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login_get"))
     bookmark_list = BookmarkList.query.filter_by(
         list_id=list_id, user_id=current_user.id
     ).first()

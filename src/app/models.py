@@ -89,6 +89,8 @@ class AnswerResult(db.Model):
     __tablename__ = "answer_result"
     # 回答結果 ID (主キー)
     id = db.Column(db.Integer, primary_key=True)
+    # 回答結果リストの ID
+    result_list_id = db.Column(db.Integer)
     # 回答者の ID (外部キー)
     answerer_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     # 回答した問題リストの ID (外部キー)

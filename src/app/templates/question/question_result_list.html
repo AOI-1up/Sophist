@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Answer Result List / SOPHIST</title>
+    <title>Answer Result Data / SOPHIST</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 
@@ -12,18 +12,26 @@
     {% block content %}
 
     <div class="my-2 mx-10 text-3xl">
-        {{ list_title }}
-    </div>
-    <div class="mx-10">
-        Createed by <span class="font-bold">{{ creator_name }}</span>
+        回答データ一覧
     </div>
 
     <div class="mt-5 mx-14">
-        {% for i in range(answer_result_ids|length) %}
-        <a href="{{ url_for('main.question_content_get', list_id=list_id)}}" class="flex">
-            {{ answer_result_ids[i] }}
-            {{ answerer_names[i] }}
-        </a>
+        {% for i in range(result_list_ids|length) %}
+        <div class="w-full h-[50px] border border-yellow-600 rounded-md mb-3 bg-gray-50 hover:shadow-xl relative">
+            <a href="{{ url_for('main.question_result_detail', list_id=list_id, result_list_id=result_list_ids[i])}}"
+                class="w-full h-full flex">
+                <div
+                    class="w-[70px] h-full flex justify-center items-center bg-white rounded-md border-r-2 border-gray-300 text-2xl">
+                    {{ i + 1 }}
+                </div>
+                <div class="w-full h-full flex items-center pl-2 text-2xl">
+                    {{ list_title }}
+                </div>
+                <div class="absolute w-full h-full flex justify-end items-end pb-1 pr-1">
+                    Answered by<span class="font-bold ml-1">{{ answerer_names[i] }}</span>
+                </div>
+            </a>
+        </div>
         {% endfor %}
     </div>
 
