@@ -7,24 +7,25 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="tracking-widest">
+<body class="tracking-widest overflow-x-hidden" x-data="{ open : false }">
     <header class="flex flex-col">
-        <div class="h-28 bg-black flex justify-center">
+        <div class="w-screen h-28 bg-black flex justify-center">
             <div class="w-[1200px] min-w-[400px] relative">
                 <div class="w-full h-full absolute flex flex-col items-center justify-center">
-                    <img src="../static/favicon.png" class="w-16 h-16" />
+                    <img src="{{ url_for('static', filename='favicon.png') }}" class="w-16 h-16" />
                     <div
                         class="font-serif text-transparent text-3xl bg-clip-text bg-gradient-to-r from-white to-yellow-600">
-                        SOPHIST</div>
+                        SOPHIST
+                    </div>
                 </div>
                 <div class="w-full h-full absolute flex flex-col items-end justify-center">
                     {% if current_user.is_authenticated %}
-                    <button class="w-16 flex flex-col items-center justify-center mr-4" onClick='alert("Open Menu...")'>
-                        <img src="../static/usericon.png" class="w-9 h-9" />
+                    <a href="{{ url_for('auth.logout') }}" class="w-16 flex flex-col items-center justify-center mr-4">
+                        <img src="{{ url_for('static', filename='usericon.png') }}" class="w-9 h-9" />
                         <div class="text-yellow-300 text-xs text-center mt-2 tracking-widest">
-                            マイページ
+                            ログアウト
                         </div>
-                    </button>
+                    </a>
                     {% else %}
                     <a href="{{ url_for('auth.login_get') }}"
                         class="w-16 flex flex-col items-center justify-center mr-4">
@@ -37,17 +38,24 @@
                 </div>
             </div>
         </div>
-        <div class="h-12 bg-yellow-950 flex justify-center">
+        <div class="w-screen h-12 bg-yellow-950 flex justify-center">
             <div class="w-[1200px] min-w-[400px] relative">
                 <div class="w-full h-full absolute flex items-center justify-end">
-                    <button
-                        class="w-[220px] h-8 flex items-center justify-center mr-6 bg-white hover:bg-gray-200  border border-gray-300 tracking-widest"
-                        onClick='alert("Open Modal...")'>
-                        <div class="text-gray-900 text-xl">Create & Import</div>
+                    <a href="{{ url_for('main.create_question_get') }}"
+                        class="mr-6 font-bold text-white tracking-widest hover:text-yellow-300">
+                        Create
+                    </a>
+                    <button @click="open = true"
+                        class="mr-6 font-bold text-white tracking-widest hover:text-yellow-300">
+                        Import
                     </button>
                 </div>
             </div>
         </div>
+        <a href="{{ url_for('main.index_get') }}"
+            class="absolute left-0 right-0 mt-[5px] mx-auto w-[65px] h-[65px]"></a>
+        <a href="{{ url_for('main.index_get') }}"
+            class="absolute left-0 right-0 mt-[70px] mx-auto w-[140px] h-[30px]"></a>
     </header>
     <main class="flex justify-center">
         <div class="w-[1200px] min-w-[400px]">
@@ -55,6 +63,21 @@
             {% endblock %}
         </div>
     </main>
+    <div x-show="open" class="absolute top-0 left-0 w-screen h-screen">
+        <div @click="open = false" class="flex justify-center items-center w-full h-full bg-black bg-opacity-80">
+            <div @click.stop="open = true" class="w-[400px] h-[130px] bg-white border rounded-md">
+                <div class="mt-2 ml-5 font-bold text-2xl">List ID</div>
+                <form action="/question/import" method="POST" class="flex justify-center items-center mt-2">
+                    <input name="import" class="w-[200px] h-[50px] pl-2 border-2 font-bold text-2xl tracking-widest rounded-sm" />
+                    <button @click.stop="open = false" type="submit"
+                        class="w-[100px] h-[50px] bg-yellow-950 text-white text-xl font-bold rounded-sm">
+                        Import
+                    </button>
+                </form>
+                <!-- <div class="flex justify-center items-center mt-1 text-red-500">正しい List ID を入力してください</div> -->
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create List / SOPHIST</title>
+    <link rel="icon" href="../static/favicon.png">
+</head>
+
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+
+    <div class="my-2 mx-10 text-3xl">問題リストの作成</div>
+    <form action="/question" method="POST"
+        x-data="{ forms: [{ question: '', option1: '', option2: '', option3: '', option4: '', answer: '' }] }"
+        class="mt-5 mx-14">
+        <input type="text" placeholder="タイトル..." name="list_title"
+            class="w-full h-[50px] border border-yellow-600 rounded-md placeholder-stone-500 text-3xl px-2 mb-6 hover:shadow-xl"
+            required>
+        <template x-for="(form, index) in forms" :key="index">
+            <div class="mb-6 flex flex-col border border-yellow-600 rounded-md bg-gray-50 hover:shadow-xl">
+                <div class="h-[45px] bg-white border-b-2 border-stone-300 rounded-md flex justify-between items-center">
+                    <div class="pl-2 text-2xl">Question</div>
+                    <button type="button" @click="forms.splice(index, 1)" class="mx-2">
+                        <img src="../static/deleteicon.png" class="m-1 w-6 h-6" />
+                    </button>
+                </div>
+                <div class="h-[300px] flex justify-between items-center">
+                    <div class="flex flex-col pl-5 pr-2 w-7/12">
+                        <textarea type="text" :name="'question' + (index + 1)" placeholder="問題文..."
+                            x-model="form.question"
+                            class="px-2 h-[260px] border border-stone-300 rounded-sm text-xl placeholder-stone-500 resize-none"></textarea>
+                    </div>
+                    <div class="flex flex-col pr-5 pl-2 w-5/12 h-[260px] justify-between">
+                        <input type="text" :name="'option' + (index + 1) + '-1'" placeholder="選択肢1..."
+                            x-model="form.option1"
+                            class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500" required>
+                        <input type="text" :name="'option' + (index + 1) + '-2'" placeholder="選択肢2..."
+                            x-model="form.option2"
+                            class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500 rounded-sm"
+                            required>
+                        <input type="text" :name="'option' + (index + 1) + '-3'" placeholder="選択肢3..."
+                            x-model="form.option3"
+                            class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500 rounded-sm"
+                            required>
+                        <input type="text" :name="'option' + (index + 1) + '-4'" placeholder="選択肢4..."
+                            x-model="form.option4"
+                            class="h-[40px] border border-stone-300 px-2 text-xl placeholder-stone-500 rounded-sm"
+                            required>
+                        <div class="bg-white flex items-center h-[60px] border border-stone-300 rounded-sm text-xl">
+                            <label class="h-full px-2 border-r border-stone-300 font-bold text-red-500 text-center">
+                                正
+                                解
+                            </label>
+                            <select :name="'answer' + (index + 1)" x-model="form.answer"
+                                class="text-xl h-full flex w-11/12 justify-end" required>
+                                <option value="1" selected>選択肢1</option>
+                                <option value="2">選択肢2</option>
+                                <option value="3">選択肢3</option>
+                                <option value="4">選択肢4</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <div>
+            <button type="button"
+                @click="forms.push({ question: '', option1: '', option2: '', option3: '', option4: '', answer: '' })"
+                class="p-1 border border-yellow-600 rounded-xl">
+                <img src="../static/plusicon.png" class="w-7 h-7" />
+            </button>
+        </div>
+        <div class="text-3xl flex justify-center">
+            <button type="submit"
+                class="mb-10 w-[280px] h-[50px] rounded-xl bg-red-600 text-white text-xl font-bold">作成する</button>
+        </div>
+    </form>
+
+    {% endblock %}
+</body>
+
+</html>

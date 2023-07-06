@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Answer Result / SOPHIST</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+
+    <div class="my-2 mx-10 text-3xl">
+        {{ list_title }}
+    </div>
+    <div class="mx-10">
+        Answered by <span class="font-bold">{{ answerer_name }}</span>
+    </div>
+
+    <div class="mt-5 mx-14">
+        {% for i in range(questions|length) %}
+        <div class="w-full h-fit border border-yellow-600 rounded-md mb-6 bg-gray-50 hover:shadow-xl">
+            <div class="h-[45px] text-2xl border-b-2 border-stone-300 rounded-md bg-white pl-2 flex items-center">
+                {{ questions[i] }}
+            </div>
+            <div class="flex flex-col my-3 mx-3 border border-stone-300 rounded-sm bg-white relative">
+                {% for j in range(options[i]|length) %}
+                <div {% if results[i]==j+1 and results[i]==correct_answers[i] %} class="bg-green-200" {% elif
+                    results[i]==j+1 and results[i]!=correct_answers[i] %} class="bg-red-200" {% endif %}>
+
+                    {% if results[i]==j+1 and results[i]==correct_answers[i] %}
+                    <div class="absolute w-full h-[44px] flex justify-end items-center pr-4 text-2xl text-green-700">
+                        ✔
+                    </div>
+                    {% elif results[i]==j+1 and results[i]!=correct_answers[i] %}
+                    <div class="absolute w-full h-[44px] flex justify-end items-center pr-4 text-2xl text-red-700">
+                        ✖
+                    </div>
+                    {% endif %}
+
+                    <div class="my-2 mx-2">
+                        <label>
+                            <input type="radio" class="ml-2 transform scale-150" {% if results[i]==j+1 %}checked{% endif
+                                %} disabled>
+                            <span class="mx-2 text-xl">{{ options[i][j] }}</span>
+                        </label>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if results[i]!=correct_answers[i] %}
+                <div class="my-4">
+                    <div class="text-xl mx-1">正解</div>
+                    <label>
+                        <input type="radio" class="ml-4 mt-3 transform scale-150" checked disabled>
+                        <span class="mx-2 text-xl">{{ options[i][correct_answers[i]-1] }}</span>
+                    </label>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="flex justify-between">
+            <div></div>
+            <a href="{{ url_for('main.index_get')}}"
+                class="mb-10 w-[280px] h-[50px] rounded-xl bg-red-600 text-white text-xl font-bold flex justify-center items-center">TOP
+                へ戻る</a>
+            <a href="{{ url_for('main.question_content_get', list_id=list_id)}}"
+                class="mb-10 w-[280px] h-[50px] rounded-xl bg-green-600 text-white text-xl font-bold flex justify-center items-center">もう一度</a>
+            <div></div>
+        </div>
+    </div>
+
+    {% endblock %}
+</body>
+
+</html>
