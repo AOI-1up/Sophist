@@ -11,6 +11,21 @@
     {% extends "layout.html" %}
     {% block content %}
 
+    <div class="my-2 mx-10 text-3xl">
+        {{ list_title }}
+    </div>
+    <div class="mx-10">
+        Createed by <span class="font-bold">{{ creator_name }}</span>
+    </div>
+
+    <div class="mt-5 mx-14">
+        {% for i in range(answer_result_ids|length) %}
+        <a href="{{ url_for('main.question_content_get', list_id=list_id)}}" class="flex">
+            {{ answer_result_ids[i] }}
+            {{ answerer_names[i] }}
+        </a>
+        {% endfor %}
+    </div>
 
     {% endblock %}
 </body>

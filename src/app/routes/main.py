@@ -228,7 +228,36 @@ def question_content_post(list_id):
 ## 回答結果の一覧ページ
 @main_bp.route("/question/result/<list_id>", methods=["GET"])
 def question_result(list_id):
-    return render_template("question/question_result_list.html")
+    question_list = QuestionList.query.get(list_id)
+    if not question_list:
+        return render_template("not_found.html")
+
+    # リスト作成者のみ閲覧可能
+    creator = User.query.get(question_list.creator_id)
+    creator_id = creator.id
+    if creator_id != current_user.id:
+        return render_template("not_found.html")
+
+    # 問題リストの内容を取得
+    list_title = question_list.list_title
+    creator_name = creator.name
+
+    # 問題リストの回答状況を取得
+    answer_results = AnswerResult.query.filter_by(list_id=list_id).all()
+    answer_result_ids = [result.id for result in answer_results]
+    answerer_ids = [result.answerer_id for result in answer_results]
+    answerer_names = []
+    for answerer_id in answerer_ids:
+        user = User.query.get(answerer_id)
+        answerer_names.append(user.name)
+
+    return render_template(
+        "question/question_result_list.html",
+        list_title=list_title,
+        creator_name=creator_name,
+        answer_result_ids=answer_result_ids,
+        answerer_names=answerer_names
+    )
 
 
 # インポート機能
