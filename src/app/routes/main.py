@@ -414,14 +414,14 @@ def delete_bookmark(list_id):
 
 
 # DB リセット機能
-@main_bp.route("/reset", methods=["GET"])
-def reset():
-    db.session.query(ImportList).delete()
-    db.session.query(BookmarkList).delete()
-    db.session.query(AnswerResult).delete()
-    db.session.query(Option).delete()
-    db.session.query(Question).delete()
-    db.session.query(QuestionList).delete()
-    db.session.commit()
+# @main_bp.route("/reset", methods=["GET"])
+# def reset():
+#     db.session.query(ImportList).delete()
+#     db.session.query(BookmarkList).delete()
+#     db.session.query(AnswerResult).delete()
+#     db.session.query(Option).delete()
+#     db.session.query(Question).delete()
+#     db.session.query(QuestionList).delete()
+#     db.session.commit()
 
-    return redirect(url_for("main.index_get"))
+#     return redirect(url_for("main.index_get"))
