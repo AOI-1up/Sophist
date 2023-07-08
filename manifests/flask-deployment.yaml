@@ -15,5 +15,14 @@ spec:
         app: python
     spec:
       containers:
-      - image: #あとで書こうね！
+      - image: inanamu/sophist
         name: python
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root"
+        - name: MYSQL_DATABASE
+          value: "flask_app"
+        - name: MYSQL_USER
+          value: "docker"
+        - name: MYSQL_PASSWORD
+          value: "docker"
