@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 8d3769c9cf8e
+Revision ID: 26061c23d848
 Revises: 
-Create Date: 2023-07-08 02:26:45.673602
+Create Date: 2023-07-08 04:15:30.784202
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8d3769c9cf8e'
+revision = '26061c23d848'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,6 +33,22 @@ def upgrade():
     sa.ForeignKeyConstraint(['creator_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('bookmark_list',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('list_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['list_id'], ['question_list.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('import_list',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('list_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['list_id'], ['question_list.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('question',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('list_id', sa.Integer(), nullable=False),
@@ -43,6 +59,7 @@ def upgrade():
     )
     op.create_table('answer_result',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('result_list_id', sa.Integer(), nullable=True),
     sa.Column('answerer_id', sa.Integer(), nullable=False),
     sa.Column('list_id', sa.Integer(), nullable=False),
     sa.Column('question_id', sa.Integer(), nullable=False),
@@ -67,6 +84,8 @@ def downgrade():
     op.drop_table('option')
     op.drop_table('answer_result')
     op.drop_table('question')
+    op.drop_table('import_list')
+    op.drop_table('bookmark_list')
     op.drop_table('question_list')
     op.drop_table('user')
     # ### end Alembic commands ###
