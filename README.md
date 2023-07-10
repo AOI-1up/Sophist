@@ -29,7 +29,7 @@ MYSQL_PASSWORD = "{{ パスワード }}"
 ```
 
 
-## Kubernetes 環境の起動
+## 本番環境の起動
 ```
 $ git clone https://github.com/AOI-1up/Sophist.git
 $ cd Sophist/
